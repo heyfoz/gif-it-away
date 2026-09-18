@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gif it to me</title>
+<meta name="description" content="Turn a video into a GIF in the browser, with control over frame rate, size, colors and dithering.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>🎞</text></svg>">
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<header class="top">
+  <h1>gif it to me</h1>
+  <p class="sub">Video to GIF, all of it in this tab. Nothing is uploaded.</p>
+</header>
+
+<main>
+
+  <section id="drop" class="drop" aria-label="Choose a video">
+    <div class="drop-inner">
+      <p class="drop-big">Drop a video here</p>
+      <p class="drop-small">MP4, MOV, WebM, anything this browser can play.</p>
+      <button type="button" id="pick" class="btn btn-primary">Choose a file</button>
+      <input type="file" id="file" accept="video/*" hidden>
+      <div class="drop-url">
+        <input type="url" id="url" placeholder="or paste a video URL" spellcheck="false">
+        <button type="button" id="urlGo" class="btn">Load</button>
+      </div>
+      <p class="drop-note" id="dropNote"></p>
+    </div>
+  </section>
+
+  <div id="workspace" class="workspace" hidden>
+
+    <section class="panel stage" aria-label="Preview">
+      <div class="stage-frame">
+        <canvas id="preview" width="16" height="9"></canvas>
+      </div>
+
+      <div class="scrub-row">
+        <input type="range" id="scrub" min="0" max="1" step="0.001" value="0" aria-label="Preview position">
+        <span class="clock"><output id="timeNow">0.00</output> / <span id="timeTotal">0.00</span>s</span>
+      </div>
+
+      <div class="trim">
+        <div class="trim-field">
+          <label for="trimStart">Start</label>
+          <input type="number" id="trimStart" min="0" step="0.05" value="0">
+          <button type="button" id="setStart" class="btn btn-tiny" title="Use the current preview position">Set here</button>
+        </div>
+        <div class="trim-field">
+          <label for="trimEnd">End</label>
+          <input type="number" id="trimEnd" min="0" step="0.05" value="0">
+          <button type="button" id="setEnd" class="btn btn-tiny" title="Use the current preview position">Set here</button>
+        </div>
+        <button type="button" id="trimReset" class="btn btn-tiny">Whole clip</button>
+      </div>
+
+      <p class="source" id="source"></p>
+    </section>
+
+    <section class="panel options" aria-label="Options">
+
+      <div class="presets">
+        <span class="presets-label">Start from</span>
+        <button type="button" class="btn btn-chip" data-preset="small">Small file</button>
+        <button type="button" class="btn btn-chip" data-preset="balanced">Balanced</button>
+        <button type="button" class="btn btn-chip" data-preset="high">High quality</button>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="fps">Frames per second</label>
+          <select id="fps">
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="15" selected>15</option>
+            <option value="20">20</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+          </select>
+          <p class="hint">GIF counts delays in hundredths of a second, so 20, 25 and 50 land exactly. The rest are spread to keep the length right.</p>
+        </div>
+
+        <div class="field">
+          <label for="maxWidth">Width</label>
+          <select id="maxWidth">
+            <option value="0">Original</option>
+            <option value="1280">1280</option>
+            <option value="1024">1024</option>
+            <option value="960">960</option>
+            <option value="800">800</option>
+            <option value="640">640</option>
+            <option value="480">480</option>
+            <option value="320">320</option>
+            <option value="custom">Custom</option>
+          </select>
+          <input type="number" id="customWidth" min="16" max="4096" step="2" value="800" hidden>
+          <p class="hint">Height follows the source. Nothing is ever scaled up.</p>
+        </div>
+
+        <div class="field">
+          <label for="colors">Colors</label>
+          <select id="colors">
+            <option value="256" selected>256</option>
+            <option value="192">192</option>
+            <option value="128">128</option>
+            <option value="64">64</option>
+            <option value="32">32</option>
+            <option value="16">16</option>
+          </select>
+          <p class="hint">256 is the most a GIF can hold. Fewer colors means a smaller file.</p>
+        </div>
+
+        <div class="field">
+          <label for="dither">Dithering</label>
+          <select id="dither">
+            <option value="none" selected>Off</option>
+            <option value="floyd">Floyd-Steinberg</option>
+            <option value="atkinson">Atkinson</option>
+          </select>
+          <p class="hint">Off keeps text and flat color crisp. Dithering hides banding in photos and gradients.</p>
+        </div>
+
+        <div class="field">
+          <label for="paletteMode">Palette</label>
+          <select id="paletteMode">
+            <option value="global" selected>One for the whole GIF</option>
+            <option value="perFrame">One per frame</option>
+          </select>
+          <p class="hint">One palette keeps colors steady and the file small. Per frame is sharper when the scene changes a lot.</p>
+        </div>
+
+        <div class="field">
+          <label for="speed">Speed</label>
+          <select id="speed">
+            <option value="0.25">0.25x</option>
+            <option value="0.5">0.5x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.5">1.5x</option>
+            <option value="2">2x</option>
+            <option value="3">3x</option>
+            <option value="4">4x</option>
+          </select>
+          <p class="hint">Faster takes fewer frames from the same stretch of video.</p>
+        </div>
+
+        <div class="field">
+          <label for="loopMode">Looping</label>
+          <select id="loopMode">
+            <option value="forever" selected>Forever</option>
+            <option value="once">Play once</option>
+            <option value="count">A set number</option>
+          </select>
+          <input type="number" id="loopCount" min="1" max="65535" step="1" value="3" hidden>
+        </div>
+      </div>
+
+      <div class="switches">
+        <label class="switch">
+          <input type="checkbox" id="diff" checked>
+          <span>Reuse pixels that did not change</span>
+        </label>
+        <p class="hint" id="diffHint">Big win on screen recordings. Needs one shared palette, and it spends one color slot.</p>
+
+        <label class="switch">
+          <input type="checkbox" id="pingPong">
+          <span>Play forwards then backwards</span>
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" id="smooth" checked>
+          <span>Smooth when shrinking</span>
+        </label>
+        <p class="hint">Turn this off to keep pixel art and small text hard edged.</p>
+      </div>
+
+      <div class="plan" id="plan"></div>
+
+      <div class="actions">
+        <button type="button" id="make" class="btn btn-primary btn-big">Make the GIF</button>
+        <button type="button" id="cancel" class="btn" hidden>Stop</button>
+        <button type="button" id="another" class="btn">New video</button>
+      </div>
+
+      <div class="progress" id="progress" hidden>
+        <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+        <p class="phase" id="phase"></p>
+      </div>
+
+    </section>
+
+    <section class="panel result" id="result" hidden aria-label="Result">
+      <div class="result-head">
+        <h2>Done</h2>
+        <div class="result-actions">
+          <a id="download" class="btn btn-primary" download="out.gif">Save the GIF</a>
+        </div>
+      </div>
+      <p class="meta" id="meta"></p>
+      <div class="result-frame">
+        <img id="gifOut" alt="The GIF that was just made">
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <p>Palette and GIF writing by <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noreferrer">gifenc</a>. Everything else is in this page.</p>
+</footer>
+
+<script type="module" src="src/app.js"></script>
+</body>
+</html>

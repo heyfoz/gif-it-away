@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+# Test clips dropped in to try the page out. Serving them is the point, but
+# they are somebody's video, not source.
+.sample/
+*.gif

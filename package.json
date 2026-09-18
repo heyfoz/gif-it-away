@@ -1,0 +1,16 @@
+{
+  "name": "gif-it-to-me",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Video to GIF in the browser, with real control over frame rate, size, colors and dithering.",
+  "type": "module",
+  "scripts": {
+    "start": "node serve.mjs",
+    "serve": "node serve.mjs",
+    "gif": "node cli.mjs"
+  },
+  "engines": {
+    "node": ">=20.11"
+  },
+  "license": "UNLICENSED"
+}
