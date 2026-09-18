@@ -9,6 +9,18 @@ want the file on disk without clicking anything.
 
 ## Running it
 
+On a Mac, without a terminal: **double-click "GIF it to me" in Applications.**
+It starts the server, opens the page and gets out of the way. You can also drop
+videos straight onto its icon, or in the Dock, to convert them with a preset.
+
+If the app is not built yet, or the project folder moved:
+
+```bash
+sh mac/make-app.sh
+```
+
+Or run it by hand:
+
 ```bash
 npm start
 ```
@@ -69,6 +81,52 @@ Measured on the capture above, at 1024x770 and 20fps:
 At 256 colors this footage has no banding left for a dither to fix, so it only
 pays the cost. On a gradient at 32 colors the order flips.
 
+## The Mac app
+
+`mac/make-app.sh` builds "GIF it to me.app" into `/Applications`, or
+`~/Applications` if that is not writable. Everything it uses ships with macOS:
+`osacompile` for the bundle, `iconutil` for the icon, `plutil` for the plist. No
+Xcode, no signing certificate, no dependencies. Built locally it carries no
+quarantine flag, so it opens without a Gatekeeper warning.
+
+- **Double-click** starts the server if it is not already up, waits for it to
+  answer, and opens the page in your default browser.
+- **Drop videos on it** and it asks for a preset, then writes a GIF next to each
+  video and reveals it in the Finder. It never writes over a GIF that is already
+  there: the second one becomes `clip 2.gif`.
+- The server **stops itself after two hours** of nobody asking it for anything.
+  Nothing is needed once the page has loaded, since the conversion is all in the
+  browser, so this just keeps a stray node process out of your process list. It
+  also means a bookmark to `localhost:5199` will go stale: open the app instead.
+
+The app stores the project's absolute path, so **re-run `mac/make-app.sh` if you
+move the folder**. It says so in a dialog rather than failing quietly.
+
+### Why the app needs to hunt for node
+
+A GUI app is launched by launchd, not by a shell, so it never reads `.zshrc` and
+starts with `PATH=/usr/bin:/bin:/usr/sbin:/sbin`. Homebrew is not on that path.
+Neither is nvm, which is not a directory of binaries at all but a shell
+function. So to a double-clicked app, `node` and `ffmpeg` simply do not exist.
+
+`mac/find-tools.sh` goes looking: the usual Homebrew and MacPorts prefixes,
+then `PATH` in case it was run from a real shell, then the per-version
+directories that nvm, fnm and asdf keep, newest first by version order rather
+than by name so v9 does not beat v10.
+
+| File | |
+| --- | --- |
+| `mac/make-app.sh` | Builds and installs the app. |
+| `mac/app.applescript` | `on run` and `on open`, and nothing else. |
+| `mac/open-page.sh` | Start the server if needed, open the browser. |
+| `mac/convert-dropped.sh` | Convert one file, pick a free name, reveal it. |
+| `mac/find-tools.sh` | Locate node and ffmpeg. |
+| `mac/make-icon.mjs` | Draw the icon as PNGs for `iconutil`. |
+
+The shell scripts are the app's whole implementation and each runs fine from a
+terminal too, which is how they were tested: with an emptied environment and a
+bare `PATH`, the way the app really sees the world.
+
 ## Command line
 
 Same encoder, frames read from ffmpeg instead of a `<video>`. Needs `ffmpeg` and
@@ -106,7 +164,8 @@ video ──┬─ browser: seek a <video>, drawImage to a canvas, getImageData
 | `src/gif.worker.js` | 40 line message shim around `gifcore`. |
 | `src/app.js` | Page wiring. |
 | `cli.mjs` | Terminal front end. |
-| `serve.mjs` | Static server with range support. |
+| `serve.mjs` | Static server with range support and an idle timeout. |
+| `mac/` | The Mac app, and the scripts it is made of. |
 | `vendor/gifenc.esm.js` | [gifenc](https://github.com/mattdesl/gifenc) 1.0.3, MIT. |
 
 Frames are decoded one at a time and handed to the worker two ahead of their
