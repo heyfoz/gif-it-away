@@ -1,4 +1,4 @@
-# gif it to me
+# GIF it Away
 
 Turn a video into a GIF, in a browser tab. Nothing is uploaded: the file is read
 off the local disk, the frames are decoded by the browser and the GIF is built
@@ -9,7 +9,7 @@ want the file on disk without clicking anything.
 
 ## Running it
 
-On a Mac, without a terminal: **double-click "GIF it to me" in Applications.**
+On a Mac, without a terminal: **double-click "GIF it Away" in Applications.**
 It starts the server, opens the page and gets out of the way. You can also drop
 videos straight onto its icon, or in the Dock, to convert them with a preset.
 
@@ -83,7 +83,7 @@ pays the cost. On a gradient at 32 colors the order flips.
 
 ## The Mac app
 
-`mac/make-app.sh` builds "GIF it to me.app" into `/Applications`, or
+`mac/make-app.sh` builds "GIF it Away.app" into `/Applications`, or
 `~/Applications` if that is not writable. Everything it uses ships with macOS:
 `osacompile` for the bundle, `iconutil` for the icon, `plutil` for the plist. No
 Xcode, no signing certificate, no dependencies. Built locally it carries no

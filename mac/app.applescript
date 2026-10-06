@@ -1,4 +1,4 @@
--- "GIF it to me.app": double-click to open the page, or drop videos on it.
+-- "GIF it Away.app": double-click to open the page, or drop videos on it.
 --
 -- Deliberately thin. All it does is decide what the user asked for and call the
 -- shell scripts next door, which are the same ones a terminal would run. Errors
@@ -23,7 +23,7 @@ on open droppedItems
 			"Best quality: full size, 20 fps", ¬
 			"Open the page instead, so I can set it up"} ¬
 		with prompt "How should these be converted?" ¬
-		with title "GIF it to me" ¬
+		with title "GIF it Away" ¬
 		default items {"Balanced: 800 px wide, 15 fps"}
 
 	if answer is false then return
@@ -56,14 +56,14 @@ on open droppedItems
 		set videoPath to POSIX path of anItem
 		set shortName to name of (info for anItem)
 		try
-			display notification "Converting " & shortName with title "GIF it to me"
+			display notification "Converting " & shortName with title "GIF it Away"
 			-- A long video can take a while, and the default would give up on it.
 			with timeout of 3600 seconds
 				set lastReport to (do shell script quoted form of (projectRoot & "/mac/convert-dropped.sh") & ¬
 					" " & quoted form of videoPath & " " & theWidth & " " & theFps & " " & theColors)
 			end timeout
 			set successes to successes + 1
-			display notification lastReport with title "GIF it to me"
+			display notification lastReport with title "GIF it Away"
 		on error errorText
 			set end of failures to shortName & ": " & errorText
 		end try

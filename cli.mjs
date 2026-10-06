@@ -15,7 +15,7 @@ import { createGifRun } from './src/gifcore.js';
 import { delaysFor, outputSize, pingPongOrder } from './src/plan.js';
 
 const HELP = `
-gif-it-to-me: turn a video into a GIF
+gif-it-away: turn a video into a GIF
 
   node cli.mjs <video> [options]
 

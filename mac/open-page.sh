@@ -8,7 +8,7 @@ set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/.." && pwd)
 PORT=${PORT:-5199}
-LOG="$HOME/Library/Logs/gif-it-to-me.log"
+LOG="$HOME/Library/Logs/gif-it-away.log"
 
 . "$HERE/find-tools.sh"
 

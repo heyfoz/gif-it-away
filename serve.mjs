@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Static file server for the gif-it-to-me page.
+// Static file server for the gif-it-away page.
 //
 // Two reasons this exists instead of opening index.html straight off disk:
 //   1. ES modules and module workers are blocked on file:// by every browser.
@@ -112,7 +112,7 @@ function resetIdleTimer() {
   if (!IDLE_MINUTES) return;
   clearTimeout(idleTimer);
   idleTimer = setTimeout(() => {
-    console.log(`gif-it-to-me: nothing asked for in ${IDLE_MINUTES} minutes, stopping.`);
+    console.log(`gif-it-away: nothing asked for in ${IDLE_MINUTES} minutes, stopping.`);
     process.exit(0);
   }, IDLE_MINUTES * 60_000);
   // A pending exit timer should not be the reason the process stays alive.
@@ -121,7 +121,7 @@ function resetIdleTimer() {
 
 server.on('request', resetIdleTimer);
 server.listen(PORT, () => {
-  console.log(`gif-it-to-me: http://localhost:${PORT}/`);
+  console.log(`gif-it-away: http://localhost:${PORT}/`);
   if (IDLE_MINUTES) console.log(`stopping after ${IDLE_MINUTES} idle minutes`);
   resetIdleTimer();
 });

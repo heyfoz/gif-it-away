@@ -1,5 +1,5 @@
 #!/bin/sh
-# Build "GIF it to me.app" so the tool can be used without a terminal.
+# Build "GIF it Away.app" so the tool can be used without a terminal.
 #
 #   sh mac/make-app.sh [install-dir]
 #
@@ -13,7 +13,7 @@ set -eu
 
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/.." && pwd)
-APP_NAME="GIF it to me"
+APP_NAME="GIF it Away"
 
 if [ $# -ge 1 ]; then
   DEST_DIR=$1
@@ -53,7 +53,7 @@ set_plist() {
 }
 set_plist CFBundleName string "$APP_NAME"
 set_plist CFBundleDisplayName string "$APP_NAME"
-set_plist CFBundleIdentifier string "io.gestique.gif-it-to-me"
+set_plist CFBundleIdentifier string "io.gestique.gif-it-to-me" # Stable identifier for existing installations.
 set_plist CFBundleShortVersionString string "1.0.0"
 set_plist CFBundleVersion string "1"
 # Retina, or the page and any screenshot of it come out soft.

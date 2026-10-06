@@ -1,5 +1,5 @@
 {
-  "name": "gif-it-to-me",
+  "name": "gif-it-away",
   "version": "1.0.0",
   "private": true,
   "description": "Video to GIF in the browser, with real control over frame rate, size, colors and dithering.",
