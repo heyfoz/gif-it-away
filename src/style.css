@@ -40,6 +40,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -69,6 +70,13 @@ body {
 }
 
 main { max-width: 1180px; margin: 0 auto; }
+
+.usage {
+  margin: 10px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
 
 .panel {
   background: var(--bg-panel);

@@ -2,8 +2,10 @@
 
 import { loadVideo, seek, createSampler } from './decode.js';
 import { outputSize, planFrames } from './plan.js';
+import { startUsageCounter } from './usage.js';
 
 const $ = (id) => document.getElementById(id);
+const recordCompletedGif = startUsageCounter($('usageCount'));
 
 const el = {
   drop: $('drop'), pick: $('pick'), file: $('file'), url: $('url'), urlGo: $('urlGo'),
@@ -458,6 +460,7 @@ async function run() {
 
     el.result.hidden = false;
     setProgress(1, 'Done');
+    recordCompletedGif();
   } catch (error) {
     if (error.message === 'cancelled') {
       setProgress(0, 'Stopped');

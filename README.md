@@ -1,13 +1,37 @@
 # GIF it Away
 
-Turn a video into a GIF, in a browser tab. Nothing is uploaded: the file is read
+Turn a video into a GIF, in a browser tab. Your video is not uploaded: it is read
 off the local disk, the frames are decoded by the browser and the GIF is built
 in a worker.
+
+**[Use GIF it Away](https://heyfoz.github.io/gif-it-away/)** — choose or drop a
+video, adjust the settings, then download your GIF. No installation, account,
+or local server is needed. Selected video files stay on your device.
 
 There is also a command line front end that runs the same encoder, for when you
 want the file on disk without clicking anything.
 
-## Running it
+## Hosting and usage count
+
+GitHub Pages serves the browser app at <https://heyfoz.github.io/gif-it-away/>.
+The `Publish GitHub Pages` workflow publishes `index.html`, `src/` and `vendor/`
+on each push to `main`. It can also be run manually from GitHub Actions. Local
+server scripts and test clips are not included in the website artifact.
+
+The live page displays an approximate global count of **completed GIFs**, not
+page views or unique visitors. It reads the total on page load and increments
+it only after encoding succeeds. Failed or cancelled conversions do not count.
+Local copies and forks do not contact the counter service.
+
+The counter uses [CountAPI](https://countapi.mileshilliard.com/), a free public
+service requiring no account or API key. Only a fixed counter name is sent;
+no video, GIF, filename, cookie or user identifier is sent by the app. The
+provider still receives ordinary connection metadata, including IP addresses.
+Counters are publicly editable, and blocked or failed requests can be missed,
+so this is a casual usage indicator rather than verified analytics. Counter
+failures never prevent conversion or download.
+
+## Running it locally
 
 On a Mac, without a terminal: **double-click "GIF it Away" in Applications.**
 It starts the server, opens the page and gets out of the way. You can also drop

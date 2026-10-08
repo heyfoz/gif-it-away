@@ -12,7 +12,8 @@
 
 <header class="top">
   <h1>GIF it Away</h1>
-  <p class="sub">Video to GIF, all of it in this tab. Nothing is uploaded.</p>
+  <p class="sub">Video to GIF, all of it in this tab. Your video stays on your device.</p>
+  <p class="usage" id="usageCount" role="status">Loading usage count…</p>
 </header>
 
 <main>
@@ -212,6 +213,11 @@
 </main>
 
 <footer class="foot">
+  <p>Built by <a href="https://github.com/heyfoz" target="_blank" rel="noreferrer">heyfoz</a> · <a href="https://github.com/heyfoz/gif-it-away" target="_blank" rel="noreferrer">View source on GitHub</a></p>
+  <details>
+    <summary>About the usage counter</summary>
+    <p>The live site contacts <a href="https://countapi.mileshilliard.com/" target="_blank" rel="noreferrer">CountAPI</a> to show the shared total and add one after each completed GIF. No videos, GIFs or filenames are sent. The service receives normal connection information such as your IP address. No cookies or personal identifiers are added by this app. This public counter is approximate; blocked requests and manual changes can affect it.</p>
+  </details>
   <p>Palette and GIF writing by <a href="https://github.com/mattdesl/gifenc" target="_blank" rel="noreferrer">gifenc</a>. Everything else is in this page.</p>
 </footer>
 
